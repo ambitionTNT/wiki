@@ -1,7 +1,12 @@
 package edu.scnu.wiki.controller;
 
+import edu.scnu.wiki.domain.Test;
+import edu.scnu.wiki.service.TestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author long
@@ -15,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class
 HelloController {
 
+    @Autowired
+    private TestService testService;
     @GetMapping("/hello")
     public String hello(){
         return "hello World";
@@ -22,5 +29,10 @@ HelloController {
     @PostMapping("/hello/post")
     public String helloPost(@RequestParam("name") String name){
         return "hello World" +name;
+    }
+
+    @GetMapping("/hello/list")
+    public List<Test> testList(){
+        return testService.list();
     }
 }

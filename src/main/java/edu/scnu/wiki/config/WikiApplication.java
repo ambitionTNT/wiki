@@ -1,6 +1,7 @@
 package edu.scnu.wiki.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,6 +11,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 @SpringBootApplication
 @ComponentScan("edu.scnu.wiki")
 @Slf4j
+@MapperScan("edu.scnu.wiki.mapper")
 public class WikiApplication {
 /*
     private static final Logger LOG = LoggerFactory.getLogger(WikiApplication.class);*/

@@ -12,3 +12,5 @@ Content-Type: application/x-www-form-urlencoded
 name=zhangsan
 
 ###
+GET http://localhost:8880/hello/list
+Accept: application/json

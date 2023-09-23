@@ -1,14 +1,14 @@
-package edu.scnu.wiki;
+package edu.scnu.wiki.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import java.util.logging.Logger;
 
 @SpringBootApplication
+@ComponentScan("edu.scnu.wiki")
 @Slf4j
 public class WikiApplication {
 /*

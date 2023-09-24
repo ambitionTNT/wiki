@@ -85,6 +85,7 @@
                 <!--允许覆盖-->
                 <configuration>
                     <overwrite>true</overwrite>
+                    <configurationFile>src/main/resources/generate/generatorConfig.xml</configurationFile>
                 </configuration>
                 <!--插件的依赖-->
                 <dependencies>

@@ -22,14 +22,14 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://rm-uf6470s9615e13hc4no.mysql.rds.aliyuncs.com:3306/wikidev?serverTimezone=Asia/Shanghai"
+                        connectionURL="jdbc:mysql://rm-7xv9h5685p98j9642mo.mysql.rds.aliyuncs.com:3306/wikidev?serverTimezone=Asia/Shanghai"
                         userId="wikidev"
-                        password="wikidevABC123">
+                        password="ambitionZCL0">
         </jdbcConnection>
 
         <!-- domain类的位置 -->
         <javaModelGenerator targetProject="src\main\java"
-                            targetPackage="com.jiawa.wiki.domain"/>
+                            targetPackage="edu.scnu.wiki.domain"/>
 
         <!-- mapper xml的位置 -->
         <sqlMapGenerator targetProject="src\main\resources"
@@ -37,7 +37,7 @@
 
         <!-- mapper类的位置 -->
         <javaClientGenerator targetProject="src\main\java"
-                             targetPackage="com.jiawa.wiki.mapper"
+                             targetPackage="edu.scnu.wiki.mapper"
                              type="XMLMAPPER"/>
 
         <!--<table tableName="demo" domainObjectName="Demo"/>-->
@@ -46,6 +46,6 @@
         <!--<table tableName="doc"/>-->
         <!--<table tableName="content"/>-->
         <!--<table tableName="user"/>-->
-        <table tableName="ebook_snapshot"/>
+        <table tableName="ebook"/>
     </context>
 </generatorConfiguration>

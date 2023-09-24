@@ -6,6 +6,7 @@ import edu.scnu.wiki.mapper.EbookMapper;
 import edu.scnu.wiki.req.EbookReq;
 import edu.scnu.wiki.resp.EbookResp;
 import edu.scnu.wiki.service.EbookService;
+import edu.scnu.wiki.utils.CopyUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,12 +32,13 @@ public class EbookServiceImpl implements EbookService {
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         criteria.andNameLike("%" + req.getName() + "%");
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
-        List<EbookResp> respList = new ArrayList<>();
-        for (Ebook ebook : ebookList) {
+
+        List<EbookResp> respList = CopyUtil.copyList(ebookList, EbookResp.class);
+        /*for (Ebook ebook : ebookList) {
             EbookResp ebookResp = new EbookResp();
             BeanUtils.copyProperties(ebook, ebookResp);
             respList.add(ebookResp);
-        }
+        }*/
         return respList;
     }
 }

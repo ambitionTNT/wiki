@@ -1,7 +1,9 @@
 package edu.scnu.wiki.service;
 
 import edu.scnu.wiki.domain.Ebook;
+import edu.scnu.wiki.req.EbookReq;
 import edu.scnu.wiki.resp.CommonResp;
+import edu.scnu.wiki.resp.EbookResp;
 
 import java.util.List;
 
@@ -13,5 +15,5 @@ import java.util.List;
  * @date 2023/9/24 16:43
  */
 public interface EbookService {
-    List<Ebook>list();
+    List<EbookResp>list(EbookReq req);
 }

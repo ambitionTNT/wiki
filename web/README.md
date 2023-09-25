@@ -29,3 +29,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
         "build-dev": "vue-cli-service build --mode build" ,
         "serve-prod": "vue-cli-service serve --mode prod",
         "build-prod": "vue-cli-service build --mode prod",
+
+
+设置全局端口
+axios.defaults.baseURL = process.env.VUE_APP_SERVE

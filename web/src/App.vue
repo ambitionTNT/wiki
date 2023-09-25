@@ -2,16 +2,15 @@
   <a-layout>
     <the-header></the-header>
       <router-view></router-view>
-    <a-layout-footer style="text-align: center">
-      TNT电子书 ©2018 Created by 张传龙
-    </a-layout-footer>
+
   </a-layout>
 </template>
 
 <script lang="ts" >
 import {defineComponent, ref} from 'vue';
-import TheHeader from '@/components/the-header.vue'; // @ is an alias to /src
-// import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
+import TheHeader from '@/components/the-header.vue';
+import TheFooter from '@/components/the-header.vue';
+import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
 const selectedKeys1 = ref<string[]>(['2']);
 const selectedKeys2 = ref<string[]>(['1']);
 const openKeys = ref<string[]>(['sub1']);
@@ -19,6 +18,7 @@ export default defineComponent({
   name: 'app',
   components: {
     TheHeader,
+    TheFooter
   },
 });
 

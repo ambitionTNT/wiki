@@ -2,7 +2,6 @@
   <a-layout>
     <the-header></the-header>
       <router-view></router-view>
-
   </a-layout>
 </template>
 

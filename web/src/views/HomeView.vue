@@ -48,22 +48,98 @@
       <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >
-      Content
+        <a-list item-layout="vertical" size="large" grid="{ gutter: 16, column: 4 }"  :data-source="ebooks">
+          <template #renderItem="{ item }">
+            <a-list-item key="item.name">
+              <template #actions>
+                  <span v-for="{ icon, text } in actions" :key="icon">
+                    <component :is="icon" style="margin-right: 8px" />
+                    {{ text }}
+                  </span>
+              </template>
+
+              <a-list-item-meta :description="item.description">
+                <template #title>
+                  <a :href="item.href">{{ item.name }}</a>
+                </template>
+                <template #avatar><a-avatar :src="item.cover" /></template>
+              </a-list-item-meta>
+            </a-list-item>
+          </template>
+        </a-list>
       </a-layout-content>
   </a-layout>
 </template>
 
+
+
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent, onMounted, reactive, ref, toRef} from 'vue';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import axios from "axios";
+import {LikeOutlined, MessageOutlined, StarOutlined} from "@ant-design/icons-vue";
+
+
+const listData: any = [];
+
+for (let i = 0; i < 23; i++) {
+  listData.push({
+    href: 'https://www.antdv.com/',
+    title: `ant design vue part ${i}`,
+    avatar: 'https://joeschmoe.io/api/v1/random',
+    description:
+        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+    content:
+        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+  });
+}
+
+
 export default defineComponent({
   name: 'HomeView',
   setup(){
     console.log("setup");
-    axios.get("http://localhost:8880/ebook/list?name=Spring").then((response)=>{
-      console.log(response);
+    const ebooks = ref();
+    const actions = [
+      { icon: StarOutlined, text: '156' },
+      { icon: LikeOutlined, text: '156' },
+      { icon: MessageOutlined, text: '2' }
+    ];
+    const ebookList = reactive({books:[]});
+    onMounted(()=>{
+      axios.get("http://127.0.0.1:8880/ebook/list  ").then((response)=>{
+        const  data = response.data;
+        ebooks.value = data.content;
+        ebookList.books = data.content;
+        // console.log(response);
+      })
     })
+    return{
+      ebooks,
+      listData,
+      actions,
+    books : toRef(ebookList, "books"),
+      pagination :{
+        onChange: (page: number) => {
+          console.log(page);
+        },
+        pageSize: 3,
+      }
+
+    }
+
   }
 });
 </script>
+
+<style scoped>
+
+.ant-avatar {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 8%;
+  margin: 5px;
+
+}
+</style>

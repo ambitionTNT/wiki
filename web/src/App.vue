@@ -1,6 +1,8 @@
 <template>
   <a-layout>
     <the-header></the-header>
+
+<!--    这个router-view就是页面http"//8080/xxxx/xx的内容填充进去-->
       <router-view></router-view>
     <the-footer></the-footer>
   </a-layout>
@@ -9,7 +11,7 @@
 <script lang="ts" >
 import {defineComponent, ref} from 'vue';
 import TheHeader from '@/components/the-header.vue';
-import TheFooter from '@/components/the-header.vue';
+import TheFooter from '@/components/the-footer.vue';
 import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
 const selectedKeys1 = ref<string[]>(['2']);
 const selectedKeys2 = ref<string[]>(['1']);

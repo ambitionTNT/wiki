@@ -33,3 +33,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 设置全局端口
 axios.defaults.baseURL = process.env.VUE_APP_SERVE
+<!--    这个router-view就是页面http"//8080/xxxx/xx的内容填充进去-->

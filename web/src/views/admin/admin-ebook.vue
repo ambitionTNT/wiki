@@ -5,11 +5,203 @@
       <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >
-        <div class="about">
-          <h1>电子书管理</h1>
+          <a-table
+              :columns="columns"
+              :row-key="record => record.id"
+              :data-source="ebooks"
+              :pagination="pagination"
+              :loading="loading"
+              @change="handleTableChange"
+          >
 
-        </div>
+            <template #cover="{ text: cover }">
+              <img v-if="cover" :src="cover" alt="avatar" />
+            </template>
+
+<!--            <template v-slot:category="{  record }">
+              <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
+            </template>
+-->
+<!--             eslint-disable-next-line-->
+            <template v-slot:action="{ record,text }">
+              <a-space size="small">
+                <a-button type="primary" @click="edit(record)" >
+                  编辑
+                </a-button>
+                  <a-button type="danger">
+                    删除
+                  </a-button>
+              </a-space>
+            </template>
+          </a-table>
       </a-layout-content>
     </a-layout>
+
+    <a-modal v-model:open="open"
+             title="电子书"
+             @ok="handleModelOk">
+
+      <a-form :model="ebook" :label-col="{span : 6}" >
+        <a-form-item label="封面">
+          <a-input v-model:value="ebook.cover" />
+        </a-form-item>
+        <a-form-item label="名称">
+          <a-input v-model:value="ebook.name" />
+        </a-form-item>
+        <a-form-item label="分类一">
+          <a-input v-model:value="ebook.category1Id" />
+        </a-form-item>
+        <a-form-item label="分类二">
+          <a-input v-model:value="ebook.category2Id" />
+        </a-form-item>
+        <a-form-item label="描述">
+          <a-input v-model:value="ebook.desc" type="text"/>
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
+
+
 </template>
+
+<script lang="ts">
+import { defineComponent, onMounted, ref } from 'vue';
+import axios from 'axios';
+import { message } from 'ant-design-vue';
+
+export default defineComponent({
+
+
+
+
+
+  name: 'AdminEbook',
+  setup() {
+    const ebooks = ref();
+    const pagination = ref({
+      current: 1,
+      pageSize: 2,
+      total: 0
+    });
+
+    const columns = [
+      {
+        title: '封面',
+        dataIndex: 'cover',
+        slots: { customRender: 'cover' }
+      },
+      {
+        title: '名称',
+        dataIndex: 'name'
+      },
+      {
+        title: '分类一',
+        key: 'category1Id',
+        dataIndex: 'category1Id'
+      },
+      {
+        title: '分类二',
+        key: 'category2Id',
+        dataIndex: 'category2Id'
+      },
+      {
+        title: '文档数',
+        dataIndex: 'docCount'
+      },
+      {
+        title: '阅读数',
+        dataIndex: 'viewCount'
+      },
+      {
+        title: '点赞数',
+        dataIndex: 'voteCount'
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        slots: { customRender: 'action' }
+      }
+    ];
+
+    /**
+     * 表单
+      */
+
+    const loading = ref(false);
+
+
+    const ebook = ref({})
+    const open = ref<boolean>(false);
+    const handleModelOk = (e: MouseEvent) => {
+      console.log(e);
+      open.value = false;
+    }
+
+    /**
+     * 编辑
+     */
+
+    const edit = (record: any) => {
+      ebook.value = record;
+      open.value = true;
+    };
+
+    /**
+     * 数据查询
+     **/
+    const handleQuery = (params: any) => {
+      loading.value = true;
+      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
+      ebooks.value = [];
+      axios.get("/ebook/list", params).then((response) => {
+        loading.value = false;
+        const data = response.data;
+        if (data.success) {
+          ebooks.value = data.content;
+
+          // 重置分页按钮
+          pagination.value.current = params.page;
+          pagination.value.total = data.content.total;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
+     * 表格点击页码时触发
+     */
+    const handleTableChange = (pagination: any) => {
+      console.log("看看自带的分页参数都有啥：" + pagination);
+      handleQuery({
+        page: pagination.current,
+        size: pagination.pageSize
+      });
+    };
+
+  onMounted(()=>{
+    handleQuery({})
+  });
+    return {
+
+      ebooks,
+      pagination,
+      columns,
+      loading,
+      ebook,
+      handleTableChange,
+      edit,
+      handleModelOk,
+      open
+    }
+  }
+});
+</script>
+
+<style scoped>
+img {
+  width: 50px;
+  height: 50px;
+}
+</style>
+

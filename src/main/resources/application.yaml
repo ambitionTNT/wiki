@@ -6,8 +6,6 @@ spring:
       password: ambitionZCL0
       driver-class-name: com.mysql.cj.jdbc.Driver
 
-
-
 druid:
   aop-patterns: edu.scnu.admin.*
   filters: stat, wall, slf4j # 底层开启功能，stat（sql监控），wall（防火墙）
@@ -37,3 +35,6 @@ mybatis:
   mapper-locations:   classpath:mapper/*.xml
   type-aliases-package:  "edu.scnu.wiki.pojo"
   config-location:  classpath:mybatis-config.xml
+logging:
+  level:
+    edu.scnu.wiki.mapper: trace

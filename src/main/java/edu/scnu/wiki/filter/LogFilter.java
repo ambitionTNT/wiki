@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 
 @Slf4j
-@Component
+//@Component
 public class LogFilter implements Filter {
 
 

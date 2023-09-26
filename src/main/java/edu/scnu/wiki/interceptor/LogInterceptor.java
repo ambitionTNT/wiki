@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2023/9/25 22:13
  */
 @Slf4j
- @Component
+//@Component
  public class LogInterceptor implements HandlerInterceptor {
 
      @Override

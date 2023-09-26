@@ -4,6 +4,7 @@ import edu.scnu.wiki.domain.Ebook;
 import edu.scnu.wiki.req.EbookReq;
 import edu.scnu.wiki.resp.CommonResp;
 import edu.scnu.wiki.resp.EbookResp;
+import edu.scnu.wiki.resp.PageResp;
 import edu.scnu.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,19 @@ public class EbookController {
 
     @GetMapping("/list")
     public CommonResp list(EbookReq req){
+        CommonResp<PageResp<EbookResp>> commonResp = new CommonResp<>();
+
+        PageResp<EbookResp> ebookResps = ebookService.list(req);
+        commonResp.setContent(ebookResps);
+        commonResp.setMessage("查询成功");
+        return commonResp;
+    }
+
+    @GetMapping("/all")
+    public CommonResp all(EbookReq req){
         CommonResp<List<EbookResp>> commonResp = new CommonResp<>();
-        List<EbookResp> ebookResps = ebookService.list(req);
+
+        List<EbookResp> ebookResps = ebookService.all(req);
         commonResp.setContent(ebookResps);
         commonResp.setMessage("查询成功");
         return commonResp;

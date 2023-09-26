@@ -1,9 +1,8 @@
 package edu.scnu.wiki.service;
 
-import edu.scnu.wiki.domain.Ebook;
-import edu.scnu.wiki.req.EbookReq;
-import edu.scnu.wiki.resp.CommonResp;
-import edu.scnu.wiki.resp.EbookResp;
+import edu.scnu.wiki.req.EbookQueryReq;
+import edu.scnu.wiki.req.EbookSaveReq;
+import edu.scnu.wiki.resp.EbookQueryResp;
 import edu.scnu.wiki.resp.PageResp;
 
 import java.util.List;
@@ -16,6 +15,8 @@ import java.util.List;
  * @date 2023/9/24 16:43
  */
 public interface EbookService {
-    PageResp<EbookResp>  list(EbookReq req);
-    List<EbookResp>  all(EbookReq req);
+    PageResp<EbookQueryResp>  list(EbookQueryReq req);
+    List<EbookQueryResp>  all(EbookQueryReq req);
+
+    int save(EbookSaveReq req);
 }

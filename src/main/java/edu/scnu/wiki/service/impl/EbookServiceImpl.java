@@ -5,19 +5,17 @@ import com.github.pagehelper.PageInfo;
 import edu.scnu.wiki.domain.Ebook;
 import edu.scnu.wiki.domain.EbookExample;
 import edu.scnu.wiki.mapper.EbookMapper;
-import edu.scnu.wiki.req.EbookReq;
-import edu.scnu.wiki.resp.EbookResp;
+import edu.scnu.wiki.req.EbookQueryReq;
+import edu.scnu.wiki.req.EbookSaveReq;
+import edu.scnu.wiki.resp.EbookQueryResp;
 import edu.scnu.wiki.resp.PageResp;
 import edu.scnu.wiki.service.EbookService;
 import edu.scnu.wiki.utils.CopyUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,14 +32,14 @@ public class EbookServiceImpl implements EbookService {
     @Autowired
     private EbookMapper ebookMapper;
     @Override
-    public PageResp<EbookResp> list(EbookReq req) {
+    public PageResp<EbookQueryResp> list(EbookQueryReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())){
             criteria.andNameLike("%" + req.getName() + "%");
         }
         PageHelper.startPage(req.getPage(),req.getSize());
-        PageResp<EbookResp> pageResp = new PageResp<>();
+        PageResp<EbookQueryResp> pageResp = new PageResp<>();
 
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 
@@ -51,18 +49,33 @@ public class EbookServiceImpl implements EbookService {
 
         log.info("总行数：",pageInfo.getTotal());
         log.info("总行数：",pageInfo.getPages());
-        List<EbookResp> respList = CopyUtil.copyList(ebookList, EbookResp.class);
+        List<EbookQueryResp> respList = CopyUtil.copyList(ebookList, EbookQueryResp.class);
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(respList);
         return pageResp;
     }
 
     @Override
-    public List<EbookResp> all(EbookReq req) {
+    public List<EbookQueryResp> all(EbookQueryReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
-        List<EbookResp> respList = CopyUtil.copyList(ebookList, EbookResp.class);
+        List<EbookQueryResp> respList = CopyUtil.copyList(ebookList, EbookQueryResp.class);
         return respList;
+    }
+
+    @Override
+    public int save(EbookSaveReq req) {
+        Ebook ebook = CopyUtil.copy(req, Ebook.class);
+        if (ObjectUtils.isEmpty(ebook.getId())){
+            //新增
+            return ebookMapper.insert(ebook);
+
+        }else {
+            //更改
+            return ebookMapper.updateByPrimaryKey(ebook);
+        }
+
+
     }
 }

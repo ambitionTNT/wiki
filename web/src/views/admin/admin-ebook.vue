@@ -135,6 +135,21 @@ export default defineComponent({
     const handleModelOk = (e: MouseEvent) => {
       console.log(e);
       open.value = false;
+
+
+      axios.post("/ebook/save", ebook.value
+        ).then((response) => {
+        loading.value = true;
+        const data = response.data;
+        if (data.success) {
+          open.value=false;
+          handleQuery({
+            page:pagination.value.current,
+            size: pagination.value.pageSize
+          })
+        }
+      });
+
     }
 
     /**

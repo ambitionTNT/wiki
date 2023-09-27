@@ -6,12 +6,36 @@
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >
 
-        <div>
-          <a-button type="primary" danger @click="add()"  >
-            新增
-          </a-button>
+        <p>
+          <a-form
+              layout="inline"
+              :model="param"
+          >
+            <a-form-item>
+              <a-input v-model:value="param.name" placeholder="名称">
+              </a-input>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" danger @click="handleQuery({
+                page: 1,
+                size: pagination.pageSize
+              })"
+              >
+                查询
+              </a-button>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" danger @click="add()"  >
+                新增
+              </a-button>
+            </a-form-item>
 
-        </div>
+          </a-form>
+
+
+
+
+        </p>
         <br>
           <a-table
               :columns="columns"
@@ -64,7 +88,9 @@
         <a-form-item label="封面">
           <a-input v-model:value="ebook.cover" />
         </a-form-item>
-        <a-form-item label="名称">
+        <a-form-item label="名称"
+                     :rules="[{ required: true, message: '名称不能为空!' }]"
+        >
           <a-input v-model:value="ebook.name" />
         </a-form-item>
         <a-form-item label="分类一">
@@ -87,6 +113,7 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
+import {Tool} from "@/util/tool";
 
 export default defineComponent({
 
@@ -148,8 +175,12 @@ export default defineComponent({
 
     const loading = ref(false);
 
-
+    // const queryName = ref();
     const ebook = ref({})
+
+    const param = ref()
+    param.value = {};
+
     const open = ref<boolean>(false);
     const modalLoading = ref(false);
     const handleModelOk = (e: MouseEvent) => {
@@ -181,8 +212,9 @@ export default defineComponent({
      */
 
     const edit = (record: any) => {
-      ebook.value = record;
+      ebook.value = Tool.copy(record);
       open.value = true;
+
     };
     /**
      * 新增
@@ -205,7 +237,8 @@ export default defineComponent({
       axios.get("/ebook/list", {
         params:{
           page: params.page,
-          size: params.size
+          size: params.size,
+          name: param.value.name
         }
 
       }
@@ -264,6 +297,7 @@ export default defineComponent({
   });
     return {
 
+      param,
       ebooks,
       pagination,
       columns,
@@ -277,7 +311,9 @@ export default defineComponent({
       modalLoading,
       handleTableChange,
       handleModelOk,
+      handleQuery,
       handleDelete,
+
       open
     }
   }

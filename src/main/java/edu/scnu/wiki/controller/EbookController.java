@@ -61,4 +61,17 @@ public class EbookController {
 
         return commonResp;
     }
+
+    @DeleteMapping("/delete/{id}")
+    public CommonResp delete(@PathVariable Long id){
+        CommonResp commonResp = new CommonResp();
+        int success = ebookService.delete(id);
+        if (success>0){
+            commonResp.setMessage("删除成功");
+        }else {
+            commonResp.setSuccess(false);
+            commonResp.setMessage("删除失败");
+        }
+        return commonResp;
+    }
 }

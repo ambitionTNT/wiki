@@ -1,5 +1,7 @@
 package edu.scnu.wiki.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * @author long
  * @version 1.0
@@ -8,6 +10,7 @@ package edu.scnu.wiki.resp;
  * @date 2023/9/24 20:19
  */
 public class EbookQueryResp {
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
 
     private String name;

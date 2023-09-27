@@ -22,7 +22,7 @@
               @change="handleTableChange"
           >
 
-            <template #cover="{ text: cover }">
+            <template v-slot:cover="{ text: cover }">
               <img v-if="cover" :src="cover" alt="avatar" />
             </template>
 
@@ -35,10 +35,21 @@
               <a-space size="small">
                 <a-button type="primary" @click="edit(record)" >
                   编辑
+
                 </a-button>
-                  <a-button type="danger">
+
+                <a-popconfirm
+                    title="删除后不可回复，您确认要删除?"
+                    ok-text="Yes"
+                    cancel-text="No"
+                    @confirm="handleDelete(record.id)"
+
+                >
+                  <a-button type="danger" >
                     删除
                   </a-button>
+                </a-popconfirm>
+
               </a-space>
             </template>
           </a-table>
@@ -63,7 +74,7 @@
           <a-input v-model:value="ebook.category2Id" />
         </a-form-item>
         <a-form-item label="描述">
-          <a-input v-model:value="ebook.desc" type="text"/>
+          <a-input v-model:value="ebook.description" type="text"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -189,7 +200,9 @@ export default defineComponent({
           page: params.page,
           size: params.size
         }
-      }).then((response) => {
+
+      }
+      ).then((response) => {
         loading.value = false;
         const data = response.data;
         if (data.success) {
@@ -203,6 +216,27 @@ export default defineComponent({
         }
       });
     };
+
+    /**
+     * 删除
+     * @param id
+     */
+    const handleDelete = ( id: number)=>{
+      loading.value = true;
+      axios.delete("/ebook/delete/" + id
+      ).then((response) => {
+        const data = response.data;
+        if (data.success) {
+
+          handleQuery({
+
+            page:pagination.value.current,
+            size: pagination.value.pageSize
+
+          })
+        }
+      });
+    }
 
     /**
      * 表格点击页码时触发
@@ -236,6 +270,7 @@ export default defineComponent({
 
       handleTableChange,
       handleModelOk,
+      handleDelete,
       open
     }
   }

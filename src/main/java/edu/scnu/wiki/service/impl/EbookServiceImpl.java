@@ -84,4 +84,9 @@ public class EbookServiceImpl implements EbookService {
 
 
     }
+
+    @Override
+    public int delete(long id) {
+        return ebookMapper.deleteByPrimaryKey(id);
+    }
 }

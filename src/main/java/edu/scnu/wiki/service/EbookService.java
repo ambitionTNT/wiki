@@ -19,4 +19,6 @@ public interface EbookService {
     List<EbookQueryResp>  all(EbookQueryReq req);
 
     int save(EbookSaveReq req);
+
+    int delete(long id);
 }

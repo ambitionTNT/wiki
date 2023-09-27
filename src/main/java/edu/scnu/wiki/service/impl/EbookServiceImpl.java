@@ -11,6 +11,7 @@ import edu.scnu.wiki.resp.EbookQueryResp;
 import edu.scnu.wiki.resp.PageResp;
 import edu.scnu.wiki.service.EbookService;
 import edu.scnu.wiki.utils.CopyUtil;
+import edu.scnu.wiki.utils.SnowFlake;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,10 @@ public class EbookServiceImpl implements EbookService {
 
     @Autowired
     private EbookMapper ebookMapper;
+
+    @Autowired
+    private SnowFlake snowFlake;
+
     @Override
     public PageResp<EbookQueryResp> list(EbookQueryReq req) {
         EbookExample ebookExample = new EbookExample();
@@ -69,7 +74,8 @@ public class EbookServiceImpl implements EbookService {
         Ebook ebook = CopyUtil.copy(req, Ebook.class);
         if (ObjectUtils.isEmpty(ebook.getId())){
             //新增
-            return ebookMapper.insert(ebook);
+            ebook.setId(snowFlake.nextId());
+            return ebookMapper.insertSelective(ebook);
 
         }else {
             //更改

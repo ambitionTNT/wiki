@@ -5,6 +5,14 @@
       <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >
+
+        <div>
+          <a-button type="primary" danger @click="add()"  >
+            新增
+          </a-button>
+
+        </div>
+        <br>
           <a-table
               :columns="columns"
               :row-key="record => record.id"
@@ -160,7 +168,15 @@ export default defineComponent({
       ebook.value = record;
       open.value = true;
     };
+    /**
+     * 新增
+     * @param record
+     */
+    const add = () => {
 
+      open.value = true;
+      ebook.value = {};
+    };
     /**
      * 数据查询
      **/
@@ -212,8 +228,13 @@ export default defineComponent({
       columns,
       loading,
       ebook,
-      handleTableChange,
+
+
       edit,
+      add,
+
+
+      handleTableChange,
       handleModelOk,
       open
     }

@@ -18,3 +18,8 @@ insert into `ebook` (id, name, description) values (2, 'Vue 入门教程', '零�
 insert into `ebook` (id, name, description) values (3, 'Python 入门教程', '零基础入门 Python 开发，企业级应用开发最佳首选框架');
 insert into `ebook` (id, name, description) values (4, 'Mysql 入门教程', '零基础入门 Mysql 开发，企业级应用开发最佳首选框架');
 insert into `ebook` (id, name, description) values (5, 'Oracle 入门教程', '零基础入门 Oracle 开发，企业级应用开发最佳首选框架');
+
+
+alter table `ebook` alter column `doc_count` set default 0;
+alter table `ebook` alter column `view_count` set default 0;
+alter table `ebook` alter column `vote_count` set default 0;

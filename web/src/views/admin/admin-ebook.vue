@@ -151,21 +151,26 @@ export default defineComponent({
 
     const ebook = ref({})
     const open = ref<boolean>(false);
+    const modalLoading = ref(false);
     const handleModelOk = (e: MouseEvent) => {
       console.log(e);
-      open.value = false;
+
 
 
       axios.post("/ebook/save", ebook.value
         ).then((response) => {
-        loading.value = true;
+        modalLoading.value = false;
         const data = response.data;
         if (data.success) {
           open.value=false;
+          modalLoading.value = true;
           handleQuery({
+
             page:pagination.value.current,
             size: pagination.value.pageSize
           })
+        }else {
+          message.error(data.message);
         }
       });
 
@@ -191,6 +196,8 @@ export default defineComponent({
     /**
      * 数据查询
      **/
+
+
     const handleQuery = (params: any) => {
       loading.value = true;
       // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
@@ -267,7 +274,7 @@ export default defineComponent({
       edit,
       add,
 
-
+      modalLoading,
       handleTableChange,
       handleModelOk,
       handleDelete,

@@ -74,7 +74,11 @@
             <artifactId>fastjson2</artifactId>
             <version>2.0.40</version>
         </dependency>
-
+<!--        validation-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

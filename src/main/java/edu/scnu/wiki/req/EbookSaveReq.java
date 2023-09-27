@@ -1,5 +1,7 @@
 package edu.scnu.wiki.req;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author long
  * @version 1.0
@@ -10,6 +12,8 @@ package edu.scnu.wiki.req;
 public class EbookSaveReq {
     private Long id;
 
+
+    @NotNull(message = "【名称】不能为空")
     private String name;
 
     private Long category1Id;

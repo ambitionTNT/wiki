@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class EbookController {
     private EbookService ebookService;
 
     @GetMapping("/list")
-    public CommonResp list(EbookQueryReq req){
+    public CommonResp list(@Valid EbookQueryReq req){
         CommonResp<PageResp<EbookQueryResp>> commonResp = new CommonResp<>();
 
         PageResp<EbookQueryResp> ebookResps = ebookService.list(req);
@@ -48,7 +49,7 @@ public class EbookController {
 
 
     @PostMapping("/save")
-    public CommonResp all(@RequestBody EbookSaveReq req){
+    public CommonResp all(@Valid@RequestBody EbookSaveReq req){
         CommonResp commonResp = new CommonResp();
 
         int success = ebookService.save(req);

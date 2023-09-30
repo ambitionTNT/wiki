@@ -15,6 +15,7 @@ public class CategoryQueryResp {
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
     @JsonFormat(shape =JsonFormat.Shape.STRING )
+
     private Long parent;
 
     private String name;

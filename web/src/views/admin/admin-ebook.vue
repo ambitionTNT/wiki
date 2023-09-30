@@ -368,10 +368,6 @@ export default defineComponent({
 
   onMounted(()=>{
     handleCategory()
-    handleQuery({
-      page:pagination.value.current,
-      size: pagination.value.pageSize
-    })
   });
     return {
 

@@ -50,10 +50,10 @@
               <img v-if="cover" :src="cover" alt="avatar" />
             </template>
 
-<!--            <template v-slot:category="{  record }">
+            <template v-slot:category="{  record }">
+<!--              {{record}}}-->
               <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
             </template>
--->
 <!--             eslint-disable-next-line-->
             <template v-slot:action="{ record,text }">
               <a-space size="small">
@@ -93,12 +93,24 @@
         >
           <a-input v-model:value="ebook.name" />
         </a-form-item>
-        <a-form-item label="分类一">
+<!--        <a-form-item label="分类一">
           <a-input v-model:value="ebook.category1Id" />
         </a-form-item>
         <a-form-item label="分类二">
           <a-input v-model:value="ebook.category2Id" />
         </a-form-item>
+        -->
+        <a-form-item label="分类">
+          <a-cascader
+              :field-names="{ label: 'name', value: 'id', children: 'children' }"
+              v-model:value="categoryIds"
+              :options="level1"
+          />
+<!--              placeholder="getCategoryName(ebook.category1Id) }} / {{ getCategoryName(ebook.category2Id)"-->
+
+        </a-form-item>
+
+
         <a-form-item label="描述">
           <a-input v-model:value="ebook.description" type="text"/>
         </a-form-item>
@@ -140,7 +152,7 @@ export default defineComponent({
         title: '名称',
         dataIndex: 'name'
       },
-      {
+/*      {
         title: '分类一',
         key: 'category1Id',
         dataIndex: 'category1Id'
@@ -149,6 +161,10 @@ export default defineComponent({
         title: '分类二',
         key: 'category2Id',
         dataIndex: 'category2Id'
+      },*/
+      {
+        title: '分类',
+        slots: { customRender: 'category' }
       },
       {
         title: '文档数',
@@ -172,11 +188,13 @@ export default defineComponent({
     /**
      * 表单
       */
-
+    const level1 = ref()
+    level1.value = []
+    const categoryIds = ref();
     const loading = ref(false);
 
     // const queryName = ref();
-    const ebook = ref({})
+    const ebook = ref()
 
     const param = ref()
     param.value = {};
@@ -185,7 +203,8 @@ export default defineComponent({
     const modalLoading = ref(false);
     const handleModelOk = (e: MouseEvent) => {
       console.log(e);
-
+      ebook.value.category1Id = categoryIds.value[0];
+      ebook.value.category2Id = categoryIds.value[1];
 
 
       axios.post("/ebook/save", ebook.value
@@ -207,14 +226,33 @@ export default defineComponent({
 
     }
 
+    const getCategoryName = (cid: number) => {
+      // console.log(cid)
+      let result = "";
+/*      console.log("+++++++++++",categorys)
+      console.log("=0----------",cid)*/
+      categorys.forEach((item: any) => {
+/*        console.log("+++++++++++",item.id)
+      console.log("----------",cid)*/
+        if (Number(item.id) === cid) {
+          // return item.name; // 注意，这里直接return不起作用
+          result = item.name;
+        }
+      });
+      // console.log("________"+result)
+      return result;
+    };
+
+
     /**
      * 编辑
      */
 
     const edit = (record: any) => {
+      console.log("222222",record)
       ebook.value = Tool.copy(record);
       open.value = true;
-
+      categoryIds.value = [ebook.value.category1Id,ebook.value.category2Id]
     };
     /**
      * 新增
@@ -233,7 +271,7 @@ export default defineComponent({
     const handleQuery = (params: any) => {
       loading.value = true;
       // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
-      ebooks.value = [];
+      // ebooks.value = [];
       axios.get("/ebook/list", {
         params:{
           page: params.page,
@@ -255,7 +293,46 @@ export default defineComponent({
           message.error(data.message);
         }
       });
+
     };
+    /**
+     * 树形结构 level1
+     * [{
+     * id: "",
+     * name: "",
+     * children:[{
+     *   id: "",
+     *   name: ""
+     * }]
+     *
+     * }]
+     */
+    let categorys :any;
+    const handleCategory = () => {
+      loading.value = true;
+      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
+
+      axios.get("/category/all"
+      ).then((response) => {
+        loading.value = false;
+        const data = response.data;
+        if (data.success) {
+           categorys = data.content;
+          console.log("原始数组: ", categorys)
+
+          level1.value = []
+          level1.value = Tool.array2Tree(categorys, 0);
+          console.log("树形数据是：", level1 )
+          // 加载完分类后，再加载电子书，否则如果分类树加载很慢，则电子书渲染会报错
+          handleQuery({
+            page: 1,
+            size: pagination.value.pageSize,
+          });
+        } else {
+          message.error(data.message);
+        }
+      });
+    }
 
     /**
      * 删除
@@ -290,6 +367,7 @@ export default defineComponent({
     };
 
   onMounted(()=>{
+    handleCategory()
     handleQuery({
       page:pagination.value.current,
       size: pagination.value.pageSize
@@ -303,6 +381,8 @@ export default defineComponent({
       columns,
       loading,
       ebook,
+      categoryIds,
+      level1,
 
 
       edit,
@@ -310,10 +390,11 @@ export default defineComponent({
 
       modalLoading,
       handleTableChange,
+      getCategoryName,
       handleModelOk,
       handleQuery,
       handleDelete,
-
+      handleCategory,
       open
     }
   }

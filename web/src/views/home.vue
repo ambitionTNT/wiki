@@ -7,14 +7,12 @@
           @click="handleClick"
       >
         <a-menu-item key="welcome">
-          <router-link to="/" >
             <MailOutlined>
-              <span>
+
+            </MailOutlined>
+          <span>
                 欢迎
               </span>
-            </MailOutlined>
-          </router-link>
-
         </a-menu-item>
         <a-sub-menu v-for="item in level1"
                     :key="item.id"
@@ -27,7 +25,7 @@
                 </span>
           </template>
           <a-menu-item v-for="subItem in item.children"
-                       :key="subItem.subItem"
+                       :key="subItem.id"
 
           >{{subItem.name}}
           </a-menu-item>
@@ -38,10 +36,19 @@
         </a-menu-item>
       </a-menu>
       </a-layout-sider>
+
+
       <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >
-        <a-list item-layout="vertical" size="large" grid="{ gutter: 16, column: 4 }"  :data-source="ebooks">
+        <div class="welcome" v-show="isShowWelcome">
+          <h1>
+            欢迎使用TNT知识库
+          </h1>
+        </div>
+
+
+        <a-list  v-show="!isShowWelcome" item-layout="vertical" size="large" grid="{ gutter: 16, column: 4 }"  :data-source="ebooks">
           <template #renderItem="{ item }">
             <a-list-item key="item.name">
               <template #actions>
@@ -101,19 +108,22 @@ export default defineComponent({
       { icon: MessageOutlined, text: '2' }
     ];
     const ebookList = reactive({books:[]});
-    onMounted(()=>{
-      axios.get("/ebook/all").then((response)=>{
-        const  data = response.data;
-        ebooks.value = data.content;
-        ebookList.books = data.content;
-        // console.log(response);
-      })
-    })
-    
-    const handleClick = () => {
-      console.log("111")
-    }
 
+
+
+
+    let categoryId2 = 0;
+    const handleClick = (value: any) => {
+      console.log("111 ",  value.key)
+      if (value.key == "welcome"){
+        isShowWelcome.value = true;
+      }else {
+        categoryId2 = value.key;
+        isShowWelcome.value = false;
+        handleQuery()
+      }
+    }
+    const isShowWelcome = ref(true)
     const level1 = ref()
     level1.value = []
     const categoryIds = ref();
@@ -130,6 +140,21 @@ export default defineComponent({
      * }]
      */
     let categorys :any;
+
+    const handleQuery = ()=>{
+      axios.get("/ebook/list",{
+        params:{
+          page:1,
+          size:100,
+          categoryId2: categoryId2
+        }
+      }).then((response)=>{
+        const  data = response.data;
+        ebooks.value = data.content.list;
+        // ebookList.books = data.content;
+        // console.log(response);
+      })
+    }
     const handleCategory = () => {
 
       // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
@@ -151,16 +176,19 @@ export default defineComponent({
         }
       });
     }
-    onMounted(() => {
+
+    onMounted(()=>{
       handleCategory();
-      // handleQueryEbook();
-    });
+      // handleQuery()
+
+    })
     return{
       ebooks,
       listData,
       level1,
       actions,
       handleClick,
+      isShowWelcome,
 
     books : toRef(ebookList, "books"),
       pagination :{

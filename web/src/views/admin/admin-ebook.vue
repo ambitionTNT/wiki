@@ -57,6 +57,15 @@
 <!--             eslint-disable-next-line-->
             <template v-slot:action="{ record,text }">
               <a-space size="small">
+              
+                <router-link :to="'/admin/doc?ebookId=' +record.id">
+                  <a-button type="primary"  >
+                    文档管理
+
+                  </a-button>
+                </router-link>
+
+
                 <a-button type="primary" @click="edit(record)" >
                   编辑
 
@@ -126,6 +135,7 @@ import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
+import {useRoute} from "vue-router";
 
 export default defineComponent({
 
@@ -135,6 +145,8 @@ export default defineComponent({
 
   name: 'AdminEbook',
   setup() {
+
+
     const ebooks = ref();
     const pagination = ref({
       current: 1,

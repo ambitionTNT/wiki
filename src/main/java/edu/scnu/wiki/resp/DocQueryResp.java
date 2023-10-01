@@ -6,15 +6,16 @@ import lombok.Data;
 /**
  * @author long
  * @version 1.0
- * @ClassName CategoryResp
+ * @ClassName DocQueryResp
  * @description: TODO
- * @date 2023/9/27 22:32
+ * @date 2023/10/1 15:18
  */
 @Data
-public class CategoryQueryResp {
-
+public class DocQueryResp {
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
+    private Long ebookId;
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long parent;
 
@@ -22,5 +23,8 @@ public class CategoryQueryResp {
 
     private Integer sort;
 
+    private Integer viewCount;
+
+    private Integer voteCount;
 
 }

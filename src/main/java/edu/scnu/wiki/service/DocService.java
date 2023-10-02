@@ -22,7 +22,7 @@ public interface DocService {
 
     int save(DocSaveReq req);
 
-    int delete(long id);
+    public int delete(List<String> ids);
 
     List<DocQueryResp> all();
 }

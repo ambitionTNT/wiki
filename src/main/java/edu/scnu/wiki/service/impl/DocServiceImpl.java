@@ -2,8 +2,7 @@ package edu.scnu.wiki.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import edu.scnu.wiki.domain.Category;
-import edu.scnu.wiki.domain.CategoryExample;
+
 import edu.scnu.wiki.domain.Doc;
 import edu.scnu.wiki.domain.DocExample;
 import edu.scnu.wiki.mapper.DocMapper;
@@ -78,8 +77,12 @@ public class DocServiceImpl implements DocService {
     }
 
     @Override
-    public int delete(long id) {
-        return docMapper.deleteByPrimaryKey(id);
+    public int delete(List<String> ids) {
+
+        DocExample docExample = new DocExample();
+        DocExample.Criteria criteria = docExample.createCriteria();
+        criteria.andIdIn(ids);
+        return docMapper.deleteByExample(docExample);
     }
 
     @Override

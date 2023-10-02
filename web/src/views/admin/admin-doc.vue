@@ -56,7 +56,7 @@
                     title="删除后不可回复，您确认要删除?"
                     ok-text="Yes"
                     cancel-text="No"
-                    @confirm="handleDelete(record.id)"
+                    @confirm="showConfirm(record.id)"
 
                 >
                   <a-button type="danger" >
@@ -129,11 +129,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import {createVNode, defineComponent, onMounted, ref} from 'vue';
 import axios from 'axios';
-import { message } from 'ant-design-vue';
+import {message, Modal} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
+import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 
 export default defineComponent({
 
@@ -174,7 +175,20 @@ export default defineComponent({
         slots: { customRender: 'action' }
       }
     ];
-
+    const showConfirm = (id :number) => {
+      Modal.confirm({
+        title: 'Do you Want to delete these items?',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: createVNode('div', { style: 'color:red;' }, 'Some descriptions'),
+        onOk() {
+          handleDelete(id);
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+        class: 'test',
+      });
+    };
     /**
      * 表单
       */
@@ -210,6 +224,37 @@ export default defineComponent({
       });
 
     }
+
+    let ids: Array<string> = [];
+
+    /**
+     * 将某节点及其子孙节点全部存入一个数组中删除
+     */
+    const deleteIds = (level1: any, id: any) => {
+      // console.log(treeSelectData, id);
+      // 遍历数组，即遍历某一层节点
+      for (let i = 0; i < level1.length; i++) {
+        const node = level1[i];
+        if (node.id === id) {
+          // 如果当前节点就是目标节点
+          ids.push(node.id)
+          // 遍历所有子节点，将所有子节点全部都加入
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            for (let j = 0; j < children.length; j++) {
+              deleteIds(children, children[j].id)
+            }
+          }
+        } else {
+          // 如果当前节点不是目标节点，则到其子节点再找找看。
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            deleteIds(children, id);
+          }
+        }
+      }
+    };
+
     /**
      * 将某节点及其子孙节点全部置为disabled
      */
@@ -321,8 +366,10 @@ export default defineComponent({
      */
     const handleDelete = ( id: number)=>{
       loading.value = true;
+
+      deleteIds(level1.value,id)
       console.log(id);
-      axios.delete("/doc/delete/" + id
+      axios.delete("/doc/delete/" + ids.join(",")
       ).then((response) => {
         const data = response.data;
         if (data.success) {
@@ -353,6 +400,7 @@ export default defineComponent({
       handleModelOk,
       handleQuery,
       handleDelete,
+      showConfirm,
 
       open
     }

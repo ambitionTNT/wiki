@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -58,6 +59,21 @@ public class DocController {
         return commonResp;
     }
 
+
+    @DeleteMapping("/delete/{ids}")
+    public CommonResp delete(@Valid @PathVariable String ids){
+        List<String> idList = Arrays.asList(ids.split(","));
+        CommonResp commonResp = new CommonResp();
+        int delete = docService.delete(idList);
+        if (delete>0){
+            commonResp.setSuccess(true);
+            commonResp.setMessage("插入成功");
+        }else {
+            commonResp.setMessage("插入失败");
+            commonResp.setSuccess(false);
+        }
+        return commonResp;
+    }
 
 
 }

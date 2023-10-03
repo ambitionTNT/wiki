@@ -3,8 +3,10 @@ package edu.scnu.wiki.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import edu.scnu.wiki.domain.Content;
 import edu.scnu.wiki.domain.Doc;
 import edu.scnu.wiki.domain.DocExample;
+import edu.scnu.wiki.mapper.ContentMapper;
 import edu.scnu.wiki.mapper.DocMapper;
 import edu.scnu.wiki.req.DocQueryReq;
 import edu.scnu.wiki.req.DocSaveReq;
@@ -28,6 +30,11 @@ import java.util.List;
  */
 @Service
 public class DocServiceImpl implements DocService {
+
+
+    @Autowired
+    private ContentMapper contentMapper;
+
     @Autowired
     private DocMapper docMapper;
     @Autowired
@@ -65,14 +72,24 @@ public class DocServiceImpl implements DocService {
     @Override
     public int save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req, Doc.class);
+        Content content = CopyUtil.copy(req, Content.class);
+        int count = 0;
         if (ObjectUtils.isEmpty(doc.getId())){
             //新增
             doc.setId(snowFlake.nextId());
-            return docMapper.insertSelective(doc);
+            content.setId(doc.getId());
+            count += docMapper.insertSelective(doc);
+            count += contentMapper.insertSelective(content);
         }else {
             //更改
-            return docMapper.updateByPrimaryKey(doc);
+            count += docMapper.updateByPrimaryKey(doc);
+            count += contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (count==1){
+                count +=contentMapper.insert(content);
+            }
+
         }
+        return count;
 
     }
 
@@ -86,12 +103,23 @@ public class DocServiceImpl implements DocService {
     }
 
     @Override
-    public List<DocQueryResp> all() {
+    public List<DocQueryResp> all(Long id) {
         DocExample docExample = new DocExample();
+        docExample.createCriteria().andEbookIdEqualTo(id);
         docExample.setOrderByClause("sort asc");
         List<Doc> docList = docMapper.selectByExample(docExample);
         List<DocQueryResp> docQueryRespList = CopyUtil.copyList(docList, DocQueryResp.class);
 
         return docQueryRespList;
+    }
+
+    @Override
+    public String findContent(Long id) {
+        Content content = contentMapper.selectByPrimaryKey(id);
+        if (ObjectUtils.isEmpty(content)) {
+            return "";
+        } else {
+            return content.getContent();
+        }
     }
 }

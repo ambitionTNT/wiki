@@ -24,5 +24,7 @@ public interface DocService {
 
     public int delete(List<String> ids);
 
-    List<DocQueryResp> all();
+    List<DocQueryResp> all(Long id);
+
+    String findContent(Long id);
 }

@@ -1,5 +1,10 @@
 package edu.scnu.wiki.req;
 
+import edu.scnu.wiki.domain.Content;
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+
 /**
  * @author long
  * @version 1.0
@@ -7,6 +12,7 @@ package edu.scnu.wiki.req;
  * @description: TODO
  * @date 2023/10/1 15:17
  */
+@Data
 public class DocSaveReq {
     private Long id;
 
@@ -22,76 +28,8 @@ public class DocSaveReq {
 
     private Integer voteCount;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @NotNull(message = "内容不能为空")
+    private String content;
 
-    public Long getEbookId() {
-        return ebookId;
-    }
-
-    public void setEbookId(Long ebookId) {
-        this.ebookId = ebookId;
-    }
-
-    public Long getParent() {
-        return parent;
-    }
-
-    public void setParent(Long parent) {
-        this.parent = parent;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    public Integer getViewCount() {
-        return viewCount;
-    }
-
-    public void setViewCount(Integer viewCount) {
-        this.viewCount = viewCount;
-    }
-
-    public Integer getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", ebookId=").append(ebookId);
-        sb.append(", parent=").append(parent);
-        sb.append(", name=").append(name);
-        sb.append(", sort=").append(sort);
-        sb.append(", viewCount=").append(viewCount);
-        sb.append(", voteCount=").append(voteCount);
-        sb.append("]");
-        return sb.toString();
-    }
 }

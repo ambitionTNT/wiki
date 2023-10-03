@@ -28,12 +28,19 @@ public class DocController {
 
 
 
-    @GetMapping("/all")
-    public CommonResp all(){
+    @GetMapping("/all/{ebookId}")
+    public CommonResp all(@PathVariable Long ebookId){
         CommonResp<List<DocQueryResp>> commonResp = new CommonResp<>();
-        List<DocQueryResp> docQueryResps = docService.all();
-        commonResp.setMessage("查询成功");
-        commonResp.setContent(docQueryResps);
+        List<DocQueryResp> docQueryResps = docService.all(ebookId);
+        if (docQueryResps.size() == 0){
+            commonResp.setMessage("查询失败");
+            commonResp.setSuccess(false);
+
+        }else {
+            commonResp.setMessage("查询成功,暂无这本电子书的文档");
+            commonResp.setContent(docQueryResps);
+        }
+
         return commonResp;
     }
     @GetMapping("/list")
@@ -49,7 +56,7 @@ public class DocController {
     public CommonResp save(@Valid @RequestBody DocSaveReq docSaveReq){
         CommonResp commonResp = new CommonResp();
         int save = docService.save(docSaveReq);
-        if (save > 0){
+        if (save  ==2){
             commonResp.setSuccess(true);
             commonResp.setMessage("插入成功");
         }else {
@@ -74,6 +81,14 @@ public class DocController {
         }
         return commonResp;
     }
+    @GetMapping("/find/{id}")
+    public CommonResp find(@PathVariable Long id){
+        CommonResp<String> commonResp = new CommonResp<>();
+        String content = docService.findContent(id);
+        commonResp.setContent(content);
+        return commonResp;
+    }
+
 
 
 }

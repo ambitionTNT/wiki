@@ -1,5 +1,6 @@
 package edu.scnu.wiki.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -11,6 +12,8 @@ import lombok.Data;
  */
 @Data
 public class UserQueryResp {
+
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
 
 

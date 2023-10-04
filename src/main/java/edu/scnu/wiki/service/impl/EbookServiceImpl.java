@@ -77,6 +77,7 @@ public class EbookServiceImpl implements EbookService {
     public int save(EbookSaveReq req) {
         Ebook ebook = CopyUtil.copy(req, Ebook.class);
         if (ObjectUtils.isEmpty(ebook.getId())){
+
             //新增
             ebook.setId(snowFlake.nextId());
             return ebookMapper.insertSelective(ebook);

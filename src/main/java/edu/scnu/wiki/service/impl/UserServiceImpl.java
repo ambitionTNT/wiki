@@ -4,9 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import edu.scnu.wiki.domain.User;
 import edu.scnu.wiki.domain.UserExample;
+import edu.scnu.wiki.exception.BusinessException;
+import edu.scnu.wiki.exception.BusinessExceptionCode;
 import edu.scnu.wiki.mapper.UserMapper;
 import edu.scnu.wiki.req.UserQueryReq;
 import edu.scnu.wiki.req.UserSaveReq;
+import edu.scnu.wiki.req.UserSaveResetPasswordReq;
 import edu.scnu.wiki.resp.PageResp;
 import edu.scnu.wiki.resp.UserQueryResp;
 import edu.scnu.wiki.service.UserService;
@@ -40,7 +43,7 @@ public class UserServiceImpl implements UserService {
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getLoginName())){
-            criteria.andNameLike("%" + req.getLoginName() + "%");
+            criteria.andLoginNameLike("%" + req.getLoginName() + "%");
         }
 
         PageHelper.startPage(req.getPage(), req.getSize());
@@ -69,18 +72,49 @@ public class UserServiceImpl implements UserService {
     @Override
     public int save(UserSaveReq req) {
         User user = CopyUtil.copy(req, User.class);
-        if (!ObjectUtils.isEmpty(user.getId())){
-            user.setId(snowFlake.nextId());
-            return userMapper.insert(user);
+        if (ObjectUtils.isEmpty(user.getId())){
+            if(ObjectUtils.isEmpty(selectByLoginName(user.getLoginName()))){
+                user.setId(snowFlake.nextId());
+                return userMapper.insert(user);
+            }else {
+                throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+            }
+
+
+
+
+
+
         }else {
             // 更改
-            return userMapper.updateByPrimaryKey(user);
+            user.setLoginName(null);
+            user.setPassword(null);
+            return userMapper.updateByPrimaryKeySelective(user);
         }
 
+    }
+
+    private User selectByLoginName(String loginName){
+
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andLoginNameEqualTo(loginName);
+        List<User> userList = userMapper.selectByExample(userExample);
+        if (userList.size()==0){
+            return null;
+        }else {
+            return userList.get(0);
+        }
     }
 
     @Override
     public int delete(long id) {
         return userMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public int resetPassword(UserSaveResetPasswordReq req) {
+        User user = CopyUtil.copy(req, User.class);
+        return userMapper.updateByPrimaryKeySelective(user);
     }
 }

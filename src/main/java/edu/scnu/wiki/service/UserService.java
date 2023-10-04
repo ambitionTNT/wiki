@@ -1,9 +1,6 @@
 package edu.scnu.wiki.service;
 
-import edu.scnu.wiki.req.EbookQueryReq;
-import edu.scnu.wiki.req.EbookSaveReq;
-import edu.scnu.wiki.req.UserQueryReq;
-import edu.scnu.wiki.req.UserSaveReq;
+import edu.scnu.wiki.req.*;
 import edu.scnu.wiki.resp.EbookQueryResp;
 import edu.scnu.wiki.resp.PageResp;
 import edu.scnu.wiki.resp.UserQueryResp;
@@ -25,4 +22,6 @@ public interface UserService {
     int save(UserSaveReq req);
 
     int delete(long id);
+    int resetPassword(UserSaveResetPasswordReq req);
+
 }

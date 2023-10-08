@@ -1,21 +1,23 @@
 package edu.scnu.wiki.controller;
 
+import edu.scnu.wiki.req.UserLoginReq;
 import edu.scnu.wiki.req.UserQueryReq;
 import edu.scnu.wiki.req.UserSaveReq;
 import edu.scnu.wiki.req.UserSaveResetPasswordReq;
-import edu.scnu.wiki.resp.CommonResp;
-import edu.scnu.wiki.resp.EbookQueryResp;
-import edu.scnu.wiki.resp.PageResp;
-import edu.scnu.wiki.resp.UserQueryResp;
+import edu.scnu.wiki.resp.*;
 import edu.scnu.wiki.service.EbookService;
 import edu.scnu.wiki.service.UserService;
+import edu.scnu.wiki.utils.SnowFlake;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author long
@@ -24,12 +26,23 @@ import java.util.List;
  * @description: TODO
  * @date 2023/10/3 21:47
  */
+
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+
+    @Autowired
+    private SnowFlake snowFlake;
+
+
 
     @GetMapping("/list")
     public CommonResp list(@Valid UserQueryReq req){
@@ -93,6 +106,26 @@ public class UserController {
             commonResp.setMessage("修改失败");
             commonResp.setSuccess(false);
         }
+        return commonResp;
+    }
+
+    @PostMapping("/login")
+    public CommonResp login(@Valid @RequestBody UserLoginReq req){
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+
+        CommonResp commonResp = new CommonResp();
+        UserLoginResp userLoginResp = userService.login(req);
+
+
+        //生成token ,放入Redis中
+
+        Long token = snowFlake.nextId();
+        userLoginResp.setToken(String.valueOf(token));
+        log.info("生成token:{} ,放入Redis中", token);
+        redisTemplate.opsForValue().set(token, userLoginResp, 3600 * 24 , TimeUnit.SECONDS);
+        commonResp.setContent(userLoginResp);
+
+        commonResp.setMessage("用户登录成功");
         return commonResp;
     }
 }

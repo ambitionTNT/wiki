@@ -3,6 +3,7 @@ package edu.scnu.wiki.service;
 import edu.scnu.wiki.req.*;
 import edu.scnu.wiki.resp.EbookQueryResp;
 import edu.scnu.wiki.resp.PageResp;
+import edu.scnu.wiki.resp.UserLoginResp;
 import edu.scnu.wiki.resp.UserQueryResp;
 
 import java.util.List;
@@ -24,4 +25,5 @@ public interface UserService {
     int delete(long id);
     int resetPassword(UserSaveResetPasswordReq req);
 
+    UserLoginResp login(UserLoginReq req);
 }

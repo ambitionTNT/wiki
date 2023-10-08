@@ -1,5 +1,6 @@
 package edu.scnu.wiki.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import edu.scnu.wiki.req.UserLoginReq;
 import edu.scnu.wiki.req.UserQueryReq;
 import edu.scnu.wiki.req.UserSaveReq;
@@ -10,6 +11,7 @@ import edu.scnu.wiki.service.UserService;
 import edu.scnu.wiki.utils.SnowFlake;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -120,12 +124,26 @@ public class UserController {
         //生成token ,放入Redis中
 
         Long token = snowFlake.nextId();
-        userLoginResp.setToken(String.valueOf(token));
         log.info("生成token:{} ,放入Redis中", token);
-        redisTemplate.opsForValue().set(token, userLoginResp, 3600 * 24 , TimeUnit.SECONDS);
+        userLoginResp.setToken(token.toString());
+
+        redisTemplate.opsForValue().set(token.toString(), JSONObject.toJSONString(userLoginResp), 3600 * 24 , TimeUnit.SECONDS);
         commonResp.setContent(userLoginResp);
 
         commonResp.setMessage("用户登录成功");
+        return commonResp;
+    }
+
+    @GetMapping("/logout/{token}")
+    public CommonResp delete(@PathVariable String token){
+        CommonResp commonResp = new CommonResp();
+        Boolean delete = redisTemplate.delete(token);
+        if (delete){
+            commonResp.setMessage("删除成功");
+        }else {
+            commonResp.setMessage("删除失败");
+            commonResp.setSuccess(false);
+        }
         return commonResp;
     }
 }

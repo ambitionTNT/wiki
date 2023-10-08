@@ -28,17 +28,32 @@
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>
 
-      <a-menu-item >
+      <a-menu-item   class="login-menu">
       <a v-show="user.id"  class="login-menu"  >
         <span>您好:{{ user.name }}</span>
       </a>
       </a-menu-item>
-      <a-menu-item   >
+      <a-menu-item  class="login-menu"  >
         <a  @click = "showLoginModel"  v-show="!user.id" class="login-menu">
           <span>登录</span>
         </a>
       </a-menu-item>
 
+      <a-menu-item   class="login-menu" >
+
+        <a-popconfirm
+            title="删除后不可回复，您确认要删除?"
+            ok-text="Yes"
+            cancel-text="No"
+            @confirm="logout()"
+
+        >
+        <a  v-show="user.id">
+
+          <span>退出登录</span>
+        </a>
+        </a-popconfirm>
+      </a-menu-item>
       </a-menu>
 
     <a-modal v-model:open="open"
@@ -63,9 +78,11 @@
 
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {computed, defineComponent, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
+import store from "@/store";
+
 declare let hexMd5: any;
 declare let KEY: any;
 export default defineComponent({
@@ -75,8 +92,9 @@ setup(){
 
   const loading = ref(false);
 
-  const user = ref();
-  user.value = {}
+  const user = computed(()=>
+    store.state.user
+   )
     const open = ref(false)
     const loginUser = ref({
       loginName: "test",
@@ -98,21 +116,38 @@ setup(){
           open.value = false;
 
           message.success("登录成功");
-          user.value = data.content
+
+          store.commit("setUser", data.content);
         }else {
 
           message.error(data.message);
         }
       })
   }
+  const logout =()=>{
+    loading.value = true;
+    console.log("开始退出登录"+ user.value.token);
+    axios.get('/user/logout/' + user.value.token).then((response)=>{
+      const data = response.data;
+      if (data.success){
 
+        message.success("登录成功");
+
+        store.commit("setUser", {});
+      }else {
+
+        message.error(data.message);
+      }
+    })
+  }
   return{
     open,
     user,
     loginUser,
     loading,
     showLoginModel,
-    login
+    login,
+    logout
   }
 }
 
@@ -125,6 +160,7 @@ setup(){
 .login-menu {
   float: right;
   color: white;
+  font-size: 18px;
 }
 
 .logo {

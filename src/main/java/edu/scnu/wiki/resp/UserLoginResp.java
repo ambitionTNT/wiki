@@ -3,7 +3,7 @@ package edu.scnu.wiki.resp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.io.Serializable;
+
 
 /**
  * @author long
@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 
 @Data
-public class UserLoginResp implements Serializable {
+public class UserLoginResp  {
 
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;

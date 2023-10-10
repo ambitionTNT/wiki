@@ -8,6 +8,7 @@ import edu.scnu.wiki.domain.Doc;
 import edu.scnu.wiki.domain.DocExample;
 import edu.scnu.wiki.mapper.ContentMapper;
 import edu.scnu.wiki.mapper.DocMapper;
+import edu.scnu.wiki.mapper.DocMapperCust;
 import edu.scnu.wiki.req.DocQueryReq;
 import edu.scnu.wiki.req.DocSaveReq;
 import edu.scnu.wiki.resp.DocQueryResp;
@@ -37,6 +38,12 @@ public class DocServiceImpl implements DocService {
 
     @Autowired
     private DocMapper docMapper;
+
+
+    @Autowired
+    private DocMapperCust docMapperCust;
+
+
     @Autowired
     private SnowFlake snowFlake;
     @Override
@@ -116,6 +123,8 @@ public class DocServiceImpl implements DocService {
     @Override
     public String findContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+        int i = docMapperCust.increaseViewCount(id);
+
         if (ObjectUtils.isEmpty(content)) {
             return "";
         } else {

@@ -19,8 +19,23 @@
 
           </a-col>
           <a-col :span="18">
-            <div class="wangeditor"  :innerHTML ="html">
+            <div>
+              <h2>
+                {{doc.name}}
+              </h2>
+              <div>
+                <span>
+                  阅读数: {{doc.viewCount}} &nbsp;&nbsp;
+                </span>
+                <span>
+                  点赞数：{{doc.voteCount}}
+                </span>
+                <a-divider style="height: 2px; background-color: #7cb305" />
+              </div>
 
+            </div>
+
+            <div class="wangeditor"  :innerHTML ="html">
             </div>
           </a-col>
         </a-row>
@@ -42,6 +57,8 @@ export default defineComponent({
     const docs = ref();
     const level1 = ref();
     level1.value ={}
+
+
     const route = useRoute()
     console.log("路由", route);
     console.log("route.path", route.path);
@@ -54,7 +71,10 @@ export default defineComponent({
     // 当前选中的文档
     const doc = ref();
 
-    doc.value = {};
+    doc.value = {
+ /*     viewCount : 0,
+      voteCount:0*/
+    };
     const handleQuery = () => {
       loading.value = true;
       // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
@@ -81,6 +101,7 @@ export default defineComponent({
           if (Tool.isNotEmpty(level1)){
             defaultSelectedKeys.value = [level1.value[0].id];
             handleQueryContent(level1.value[0].id);
+            doc.value = level1.value[0];
           }
 
 
@@ -108,11 +129,18 @@ export default defineComponent({
 
     const onSelect = (selectedKeys: any, info: any) => {
       console.log('selected', selectedKeys, info);
+      console.log('selectedwwwwwwww222w',  info);
       if (Tool.isNotEmpty(selectedKeys)) {
-        // 选中某一节点时，加载该节点的文档信息
-        doc.value = info.selectedNodes[0].props;
+
+
         // 加载内容
         handleQueryContent(selectedKeys[0]);
+
+        // 选中某一节点时，加载该节点的文档信息
+        console.log("++++++++++++++++++", info.selectedNodes[0] )
+        doc.value = info.selectedNodes[0];
+        console.log("++++++++++++++++++", doc )
+
       }
     };
 
@@ -121,6 +149,7 @@ export default defineComponent({
     });
     return {
       level1,
+      doc,
       html,
       defaultSelectedKeys,
       handleQuery,

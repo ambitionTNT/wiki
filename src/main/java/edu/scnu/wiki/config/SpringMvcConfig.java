@@ -1,6 +1,8 @@
 package edu.scnu.wiki.config;
 
 import edu.scnu.wiki.interceptor.LogInterceptor;
+import edu.scnu.wiki.interceptor.LoginInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -14,10 +16,34 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class SpringMvcConfig implements WebMvcConfigurer {
+
+    @Autowired
+    LoginInterceptor loginInterceptor;
+    @Autowired
+    LogInterceptor logInterceptor;
+
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LogInterceptor())
+        registry.addInterceptor(logInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/","/login","/css/**","/fonts/**","/images/**");
+                .excludePathPatterns(
+                        "/",
+                        "/css/**",
+                        "/fonts/**",
+                        "/images/**"
+                );
+
+        registry.addInterceptor(loginInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/user/login",
+                        "/doc/find/**",
+                        "/category/all",
+                        "/ebook/list",
+                        "/doc/all/**",
+                        "/doc/find-content/**"
+
+                );
     }
 }

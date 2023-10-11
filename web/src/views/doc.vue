@@ -37,6 +37,14 @@
 
             <div class="wangeditor"  :innerHTML ="html">
             </div>
+            <a-button type="primary" size="large" ghost @click="vote">
+              <template #icon><LikeOutlined /></template>
+              点赞{{doc.voteCount}}
+
+            </a-button>
+            <div>
+
+            </div>
           </a-col>
         </a-row>
 
@@ -123,6 +131,17 @@ export default defineComponent({
         }
       });
     };
+    const vote = ()=>{
+      axios.get('/doc/vote/' + doc.value.id).then((response) => {
+        const  data = response.data;
+        if (data.success){
+          doc.value.voteCount++;
+        }else {
+          message.error(data.message)
+        }
+      })
+    }
+
 
     const defaultSelectedKeys = ref();
     defaultSelectedKeys.value = [];
@@ -153,6 +172,7 @@ export default defineComponent({
       html,
       defaultSelectedKeys,
       handleQuery,
+      vote,
       onSelect,
     }
 

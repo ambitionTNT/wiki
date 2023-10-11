@@ -27,4 +27,5 @@ public interface DocService {
     List<DocQueryResp> all(Long id);
 
     String findContent(Long id);
+    int vote(Long id);
 }

@@ -2,6 +2,7 @@ package edu.scnu.wiki.aspect;
 
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import com.alibaba.fastjson.JSONObject;
+import edu.scnu.wiki.utils.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -52,6 +53,8 @@ public class LogAspect {
         log.info("类名方法: {}.{}", signature.getDeclaringTypeName(), name);
         log.info("远程地址: {}", request.getRemoteAddr());
 
+
+        RequestContext.setRemoteAddr(getRemoteIp(request));
         // 打印请求参数
         Object[] args = joinPoint.getArgs();
         // LOG.info("请求参数: {}", JSONObject.toJSONString(args));

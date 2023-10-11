@@ -13,4 +13,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface DocMapperCust {
     int increaseViewCount(@Param("id") Long id);
+    int increaseVoteCount(@Param("id") Long id);
 }

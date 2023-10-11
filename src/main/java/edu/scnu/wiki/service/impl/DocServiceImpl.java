@@ -6,6 +6,8 @@ import com.github.pagehelper.PageInfo;
 import edu.scnu.wiki.domain.Content;
 import edu.scnu.wiki.domain.Doc;
 import edu.scnu.wiki.domain.DocExample;
+import edu.scnu.wiki.exception.BusinessException;
+import edu.scnu.wiki.exception.BusinessExceptionCode;
 import edu.scnu.wiki.mapper.ContentMapper;
 import edu.scnu.wiki.mapper.DocMapper;
 import edu.scnu.wiki.mapper.DocMapperCust;
@@ -15,6 +17,8 @@ import edu.scnu.wiki.resp.DocQueryResp;
 import edu.scnu.wiki.resp.PageResp;
 import edu.scnu.wiki.service.DocService;
 import edu.scnu.wiki.utils.CopyUtil;
+import edu.scnu.wiki.utils.RedisUtil;
+import edu.scnu.wiki.utils.RequestContext;
 import edu.scnu.wiki.utils.SnowFlake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +36,9 @@ import java.util.List;
 @Service
 public class DocServiceImpl implements DocService {
 
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Autowired
     private ContentMapper contentMapper;
@@ -130,5 +137,17 @@ public class DocServiceImpl implements DocService {
         } else {
             return content.getContent();
         }
+    }
+
+    @Override
+    public int  vote(Long id) {
+        //远程ip+doc.id作为key，24小时之内不可以重复
+        String key = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + key, 3600 * 24)){
+            return docMapperCust.increaseVoteCount(id);
+        }else {
+            throw new BusinessException(BusinessExceptionCode)
+        }
+
     }
 }

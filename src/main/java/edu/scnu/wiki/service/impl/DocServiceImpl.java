@@ -21,8 +21,10 @@ import edu.scnu.wiki.utils.RedisUtil;
 import edu.scnu.wiki.utils.RequestContext;
 import edu.scnu.wiki.utils.SnowFlake;
 import edu.scnu.wiki.websocket.WebSocketService;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
@@ -38,7 +40,7 @@ import java.util.List;
 public class DocServiceImpl implements DocService {
 
     @Autowired
-    private WebSocketService webSocketService;
+    private WsService wsService;
 
 
     @Autowired
@@ -88,6 +90,7 @@ public class DocServiceImpl implements DocService {
     }
 
     @Override
+    @Transactional(rollbackFor = BusinessException.class)
     public int save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req, Doc.class);
         Content content = CopyUtil.copy(req, Content.class);
@@ -149,7 +152,10 @@ public class DocServiceImpl implements DocService {
         String ip = RequestContext.getRemoteAddr();
         if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + ip, 3600 * 24)){
             Doc doc = docMapper.selectByPrimaryKey(id);
-            webSocketService.sendInfo("【" + doc.getName() + "】被点赞!");
+
+            String logId = MDC.get("LOG_ID");
+            wsService.sentInfo("【" + doc.getName() + "】被点赞!", logId);
+
             return docMapperCust.increaseVoteCount(id);
         }else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);

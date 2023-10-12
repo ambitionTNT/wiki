@@ -30,7 +30,7 @@ export default defineComponent({
         message: '收到消息！',
         description:
         event.data,
-        duration: 0,
+        duration: 3,
       });
     };
     const onError = () => {

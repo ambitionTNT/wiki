@@ -52,9 +52,17 @@
           <template #renderItem="{ item }">
             <a-list-item key="item.name">
               <template #actions>
-                  <span v-for="{ icon, text } in actions" :key="icon">
-                    <component :is="icon" style="margin-right: 8px" />
-                    {{ text }}
+                  <span >
+                    <component :is="'StarOutlined'" style="margin-right: 8px" />
+                    {{ item.docCount }}
+                  </span>
+                <span >
+                    <component :is="'UserOutlined'" style="margin-right: 8px" />
+                    {{ item.viewCount }}
+                  </span>
+                <span >
+                    <component :is="'LikeOutlined'" style="margin-right: 8px" />
+                    {{ item.voteCount }}
                   </span>
               </template>
 

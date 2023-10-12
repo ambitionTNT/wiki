@@ -3,6 +3,7 @@ package edu.scnu.wiki.aspect;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import com.alibaba.fastjson.JSONObject;
 import edu.scnu.wiki.utils.RequestContext;
+import edu.scnu.wiki.utils.SnowFlake;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,6 +12,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -33,13 +36,21 @@ import javax.servlet.http.HttpServletRequest;
 public class LogAspect {
 
 
+    @Autowired
+    private SnowFlake snowFlake;
+
     /** 定义一个切点 */
+
+
+
     @Pointcut("execution(public * edu.scnu.*.controller..*Controller.*(..))")
     public void controllerPointcut() {}
 
     @Before("controllerPointcut()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
 
+        //增加日志流水号
+        MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
 
         // 开始打印请求日志
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

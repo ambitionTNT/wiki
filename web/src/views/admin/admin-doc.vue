@@ -451,13 +451,16 @@ export default defineComponent({
 
       // open.value = true;
       doc.value = {
+
         ebookId : route.query.ebookId
       };
 
 
+      // valueHtml.value = {}
       treeSelectData.value = Tool.copy(level1.value) || [];
       //为选择树添加一个“无”
       treeSelectData.value.unshift({id:0, name:"无"})
+      valueHtml.value = ""
       console.log("______________", treeSelectData.value)
     };
     /**

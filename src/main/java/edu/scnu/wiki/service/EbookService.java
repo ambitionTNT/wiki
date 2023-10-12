@@ -21,4 +21,6 @@ public interface EbookService {
     int save(EbookSaveReq req);
 
     int delete(long id);
+
+    int updateEbook();
 }

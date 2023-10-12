@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import edu.scnu.wiki.domain.Ebook;
 import edu.scnu.wiki.domain.EbookExample;
+import edu.scnu.wiki.mapper.DocMapperCust;
 import edu.scnu.wiki.mapper.EbookMapper;
 import edu.scnu.wiki.req.EbookQueryReq;
 import edu.scnu.wiki.req.EbookSaveReq;
@@ -29,6 +30,10 @@ import java.util.List;
 @Service
 @Slf4j
 public class EbookServiceImpl implements EbookService {
+
+
+    @Autowired
+    private DocMapperCust docMapperCust;
 
     @Autowired
     private EbookMapper ebookMapper;
@@ -93,5 +98,10 @@ public class EbookServiceImpl implements EbookService {
     @Override
     public int delete(long id) {
         return ebookMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public int updateEbook() {
+        return docMapperCust.updateEbookInfo();
     }
 }

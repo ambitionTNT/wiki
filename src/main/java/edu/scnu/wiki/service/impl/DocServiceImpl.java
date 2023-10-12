@@ -20,6 +20,7 @@ import edu.scnu.wiki.utils.CopyUtil;
 import edu.scnu.wiki.utils.RedisUtil;
 import edu.scnu.wiki.utils.RequestContext;
 import edu.scnu.wiki.utils.SnowFlake;
+import edu.scnu.wiki.websocket.WebSocketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -35,6 +36,9 @@ import java.util.List;
  */
 @Service
 public class DocServiceImpl implements DocService {
+
+    @Autowired
+    private WebSocketService webSocketService;
 
 
     @Autowired
@@ -142,12 +146,13 @@ public class DocServiceImpl implements DocService {
     @Override
     public int  vote(Long id) {
         //远程ip+doc.id作为key，24小时之内不可以重复
-        String key = RequestContext.getRemoteAddr();
-        if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + key, 3600 * 24)){
+        String ip = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + ip, 3600 * 24)){
+            Doc doc = docMapper.selectByPrimaryKey(id);
+            webSocketService.sendInfo("【" + doc.getName() + "】被点赞!");
             return docMapperCust.increaseVoteCount(id);
         }else {
-            throw new BusinessException(BusinessExceptionCode)
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
-
     }
 }

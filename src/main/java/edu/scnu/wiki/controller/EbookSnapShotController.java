@@ -25,6 +25,7 @@ public class EbookSnapShotController {
     @Autowired
     private EbookSnapShotService ebookSnapShotService;
 
+    @RequestMapping("/statistic")
     public CommonResp getStatistic(){
         CommonResp<List<EbookSnapShotResp>> commonResp = new CommonResp<>();
         List<EbookSnapShotResp> statistic = ebookSnapShotService.getStatistic();

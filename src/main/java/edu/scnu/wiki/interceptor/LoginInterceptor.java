@@ -53,7 +53,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (object == null) {
             log.warn( "token无效，请求被拦截" );
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return false;
+            return true;
         } else {
             log.info("已经登录:{}", object);
             return true;

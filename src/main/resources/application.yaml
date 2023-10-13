@@ -1,7 +1,7 @@
 spring:
   datasource:
     druid:
-      url: jdbc:mysql://rm-7xv9h5685p98j9642mo.mysql.rds.aliyuncs.com:3306/wikidev
+      url: jdbc:mysql://rm-7xv9h5685p98j9642mo.mysql.rds.aliyuncs.com:3306/wikidev?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
       username: wikidev
       password: ambitionZCL0
       driver-class-name: com.mysql.cj.jdbc.Driver

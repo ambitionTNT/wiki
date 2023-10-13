@@ -13,9 +13,7 @@ import {defineComponent, ref} from 'vue';
 import TheHeader from '@/components/the-header.vue';
 import TheFooter from '@/components/the-footer.vue';
 import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
-const selectedKeys1 = ref<string[]>(['2']);
-const selectedKeys2 = ref<string[]>(['1']);
-const openKeys = ref<string[]>(['sub1']);
+
 export default defineComponent({
   name: 'app',
   components: {

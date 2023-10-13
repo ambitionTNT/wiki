@@ -1,5 +1,9 @@
 package edu.scnu.wiki.service;
 
+import edu.scnu.wiki.resp.EbookSnapShotResp;
+
+import java.util.List;
+
 /**
  * @author long
  * @version 1.0
@@ -9,4 +13,5 @@ package edu.scnu.wiki.service;
  */
 public interface EbookSnapShotService {
     int genSnapShot();
+    List<EbookSnapShotResp> getStatistic();
 }

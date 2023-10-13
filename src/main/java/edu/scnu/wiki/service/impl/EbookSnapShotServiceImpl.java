@@ -1,9 +1,12 @@
 package edu.scnu.wiki.service.impl;
 
 import edu.scnu.wiki.mapper.EbookSnapShotMapperCust;
+import edu.scnu.wiki.resp.EbookSnapShotResp;
 import edu.scnu.wiki.service.EbookSnapShotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author long
@@ -21,5 +24,10 @@ public class EbookSnapShotServiceImpl implements EbookSnapShotService {
     @Override
     public int genSnapShot() {
         return ebookSnapShotMapperCust.updateEbookSnapShot();
+    }
+
+    @Override
+    public List<EbookSnapShotResp> getStatistic() {
+        return ebookSnapShotMapperCust.selectStatistic();
     }
 }

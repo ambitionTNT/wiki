@@ -1,6 +1,9 @@
 package edu.scnu.wiki.mapper;
 
+import edu.scnu.wiki.resp.EbookSnapShotResp;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @version 1.0
@@ -12,4 +15,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface EbookSnapShotMapperCust {
     int updateEbookSnapShot();
+    List<EbookSnapShotResp> selectStatistic();
 }

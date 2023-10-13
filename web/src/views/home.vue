@@ -43,7 +43,7 @@
       >
         <div class="welcome" v-show="isShowWelcome">
           <h1>
-            欢迎使用TNT知识库
+            <the-welcome></the-welcome>
           </h1>
         </div>
 
@@ -90,6 +90,7 @@ import axios from "axios";
 import {LikeOutlined, MessageOutlined, StarOutlined} from "@ant-design/icons-vue";
 import {Tool} from "@/util/tool";
 import {message} from "ant-design-vue";
+import TheWelcome from '@/components/the-welcome.vue';
 
 
 const listData: any = [];
@@ -108,6 +109,11 @@ for (let i = 0; i < 23; i++) {
 
 
 export default defineComponent({
+
+
+  components: {
+    TheWelcome
+  },
   name: 'HomeView',
   setup(){
     console.log("setup");

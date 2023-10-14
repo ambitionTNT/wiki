@@ -30,4 +30,9 @@ public class EbookSnapShotServiceImpl implements EbookSnapShotService {
     public List<EbookSnapShotResp> getStatistic() {
         return ebookSnapShotMapperCust.selectStatistic();
     }
+
+    @Override
+    public List<EbookSnapShotResp> get30Statistic() {
+        return ebookSnapShotMapperCust.select30Statistic();
+    }
 }

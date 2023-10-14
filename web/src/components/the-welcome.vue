@@ -103,6 +103,12 @@
       <div id="main" style="width: 600px;height:400px;"></div>
     </a-col>
   </a-row>
+  <br>
+  <a-row>
+    <a-col :span="24" >
+      <div id="main-col" style="width: 100%;height:300px;"></div>
+    </a-col>
+  </a-row>
 </template>
 
 <script lang="ts">
@@ -124,23 +130,106 @@ export default defineComponent({
       ).then((response)=>{
         const data = response.data;
         if (data.success) {
-          statisticResp.value.viewCount = data.content[0].viewCount;
-          statisticResp.value.voteCount = parseInt(data.content[0].voteCount).toFixed(0);
-          statisticResp.value.tadayViewCount = data.content[0].viewIncrease;
-          statisticResp.value.tadayVoteCount = parseInt(data.content[0].voteIncrease).toFixed(0);
+          statisticResp.value.viewCount = data.content[1].viewCount;
+          statisticResp.value.voteCount = parseInt(data.content[1].voteCount).toFixed(0);
+          statisticResp.value.tadayViewCount = data.content[1].viewIncrease;
+          statisticResp.value.tadayVoteCount = parseInt(data.content[1].voteIncrease).toFixed(0);
 
           // 按分钟计算当前时间点，占一天的百分比
           const now = new Date();
           const nowRate = (now.getHours() * 60 + now.getMinutes()) / (60 * 24);
           // console.log(nowRate)
 
-          statisticResp.value.todayViewIncrease = parseInt(String(data.content[0].viewIncrease / nowRate));
+          statisticResp.value.todayViewIncrease = parseInt(String(data.content[1].viewIncrease / nowRate));
           // todayViewIncreaseRate：今日预计增长率
           statisticResp.value.todayViewIncreaseRate = ((statisticResp.value.todayViewIncrease - data.content[0].viewIncrease) / data.content[0].viewIncrease * 100).toFixed(2);
           statisticResp.value.todayViewIncreaseRateAbs = (Math.abs(statisticResp.value.todayViewIncreaseRate)).toFixed(2);
         }
       })
     }
+
+
+    const init30Statistic = (list: any)=>{
+      // 发布生产后出现问题：切到别的页面，再切回首页，报表显示不出来
+      // 解决方法：把原来的id=main的区域清空，重新初始化
+      const chartDom = document.getElementById('main-col');
+      const myChart1 = echarts.init(chartDom);
+      const xAxis = [];
+      const seriesView = []
+      const seriesVote = []
+      console.log("____" + list[0].viewCount)
+
+      for (let i = 0; i < list.length; i++) {
+        xAxis.push(list[i].date);
+        seriesView.push(list[i].viewCount)
+        seriesVote.push(list[i].voteCount)
+      }
+
+      console.log("____" + seriesView)
+      console.log("+++++++" + seriesVote)
+
+      const option1 = {
+        title: {
+          text: '30天趋势图'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        grid: {
+          left: '1%',
+          right: '3%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          data: xAxis
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+
+            name: '总阅读数',
+            data: seriesView,
+            type: 'line',
+            smooth: true
+          },
+          {
+
+            name: '总点赞量',
+            data: seriesVote,
+            type: 'line',
+            smooth: true
+          }
+
+        ]
+      };
+      // 使用刚指定的配置项和数据显示图表。
+      myChart1.setOption(option1);
+    }
+
+    const get30Statistic = ()=>{
+      axios.get("/ebook-snapshot/statistic-30").then((response)=>{
+        const data = response.data;
+        if (data.success){
+          const statisticList = data.content;
+          init30Statistic(statisticList);
+        }
+      })
+    }
+
+
+
+
+
     const testEcharts = ()=>{
       // 基于准备好的dom，初始化echarts实例
       const myChart = echarts.init(document.getElementById('main'));
@@ -172,7 +261,8 @@ export default defineComponent({
     }
     onMounted(()=>{
       getStatistic();
-      testEcharts()
+      testEcharts();
+      get30Statistic()
     })
     return{
       statisticResp

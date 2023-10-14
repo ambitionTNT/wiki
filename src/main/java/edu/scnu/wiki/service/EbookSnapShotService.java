@@ -14,4 +14,5 @@ import java.util.List;
 public interface EbookSnapShotService {
     int genSnapShot();
     List<EbookSnapShotResp> getStatistic();
+    List<EbookSnapShotResp> get30Statistic();
 }

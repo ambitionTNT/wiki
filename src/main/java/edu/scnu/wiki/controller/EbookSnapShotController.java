@@ -33,4 +33,13 @@ public class EbookSnapShotController {
         commonResp.setMessage("查询成功");
         return commonResp;
     }
+
+    @RequestMapping("/statistic-30")
+    public CommonResp get30Statistic(){
+        CommonResp<List<EbookSnapShotResp>> commonResp = new CommonResp<>();
+        List<EbookSnapShotResp> statistic = ebookSnapShotService.getStatistic();
+        commonResp.setContent(statistic);
+        commonResp.setMessage("查询成功");
+        return commonResp;
+    }
 }

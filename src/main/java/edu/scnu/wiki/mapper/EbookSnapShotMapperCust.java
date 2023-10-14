@@ -16,4 +16,7 @@ import java.util.List;
 public interface EbookSnapShotMapperCust {
     int updateEbookSnapShot();
     List<EbookSnapShotResp> selectStatistic();
+    List<EbookSnapShotResp> select30Statistic();
+
+
 }
